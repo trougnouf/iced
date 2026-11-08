@@ -387,7 +387,7 @@ where
             return;
         };
 
-        let was_hovered = self.hovered_link.is_some();
+        let was_hovered = self.hovered_link;
 
         if let Some(position) = cursor.position_in(layout.bounds()) {
             let state = tree
@@ -406,7 +406,11 @@ where
             self.hovered_link = None;
         }
 
-        if was_hovered != self.hovered_link.is_some() {
+        // Request a redraw whenever the hovered link changes, not only when
+        // hover begins or ends: moving the cursor directly from one link to
+        // an adjacent one would otherwise keep the stale underline on the
+        // previously hovered link.
+        if was_hovered != self.hovered_link {
             shell.request_redraw();
         }
 
